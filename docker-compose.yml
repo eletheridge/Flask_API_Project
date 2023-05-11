@@ -1,0 +1,40 @@
+version: "2.3"
+services:
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3,sqs
+      - AWS_DEFAULT_REGION=us-west-2
+      - EDGE_PORT=4566
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+      - localstack
+      - redis
+      - rabbitmq
+    command: flask --debug run --port=5432 --host=0.0.0.0
+    volumes:
+      - ${PWD}/app.py:/app.py
+      - ${PWD}/mongo_calls.py:/mongo_calls.py
+      - ${PWD}/extras.py:/extras.py
+      - ${PWD}/redis_calls.py:/redis_calls.py
+    ports:
+      - 5432:5432
