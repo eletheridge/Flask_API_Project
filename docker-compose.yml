@@ -30,11 +30,9 @@ services:
       - localstack
       - redis
       - rabbitmq
+    restart: always
     command: flask --debug run --port=5432 --host=0.0.0.0
     volumes:
-      - ${PWD}/app.py:/app.py
-      - ${PWD}/mongo_calls.py:/mongo_calls.py
-      - ${PWD}/extras.py:/extras.py
-      - ${PWD}/redis_calls.py:/redis_calls.py
+      - ${PWD}/app:/app
     ports:
       - 5432:5432

@@ -3,10 +3,12 @@ from mongo_calls import MongoConnect
 from datetime import datetime
 import extras
 from redis_calls import RedisClient
+from logger import Logger
 
 app = Flask(__name__)
 
 mongo_client = MongoConnect("test")
+logger = Logger(filename='api.log', app_name='API')
 
 
 @app.route('/')
@@ -19,6 +21,8 @@ def index():
 @extras.responder
 def mongo_test():
     if request.method == "POST":
+        logger.write(level="INFO",
+                     message=f'INBOUND POST REQUEST -- ID: {request.args.get("id")} -- BODY: {request.json}')
         body = request.json
         if "post_message" in body.keys():
             dt = datetime.now()
@@ -26,11 +30,16 @@ def mongo_test():
             response = mongo_client.post(payload)
             _id = str(response.inserted_id)
             response = mongo_client.one(_id)
+            logger.write(level="INFO",
+                         message=f'OUTBOUND POST RESPONSE -- ID: {_id} -- BODY: {response}')
             return response, 200
         else:
             response = "FAIL"
             return response, 400
     if request.method == "GET":
+        extras.logger("mongo_test",
+                      data={"method": request.method, "id": request.args.get("id")},
+                      level="INFO")
         if request.args.get("id"):
             query = str(request.args.get("id"))
             response = mongo_client.one(query)

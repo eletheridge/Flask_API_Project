@@ -1,9 +1,11 @@
 # start with a base image
 # FROM ubuntu:16.04
-FROM python:3.7-slim
+FROM python:3.11-slim
 
 # set environment vars
-ENV FLASK_ENV=development
+ENV FLASK_APP="/app/app.py"
+ENV FLASK_ENV="development"
+ENV AUTH_HEADER_KEY="34f1f529f2fe86fd5d29f4a8feb7f3860a3a4568fdbdd1186dd659282553bf1f"
 
 USER root
 
@@ -18,16 +20,7 @@ RUN echo "America/New_York" > /etc/timezone; dpkg-reconfigure -f noninteractive 
 
 RUN pip install --upgrade pip
 
-#ADD ./app.py ./app.py
-ADD ./requirements.txt ./requirements.txt
-RUN pip3 install -r requirements.txt
-
-#ADD ./config /config
-
-# -- configure ssh keys
-RUN bash /config/deploy_keys/configure/ssh.sh /config/deploy_keys
-RUN bash /config/deploy_keys/configure/requirements.sh /config
-
-
+ADD ./requirements.txt ./app/requirements.txt
+RUN pip3 install -r /app/requirements.txt
 
 EXPOSE 5432

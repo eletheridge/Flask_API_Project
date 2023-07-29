@@ -2,6 +2,7 @@ from functools import wraps
 from flask import request
 import hashlib
 import os
+from datetime import datetime
 
 
 # Decorators
@@ -9,16 +10,20 @@ def authenticate(f):
     """
     Simple Authentication Example using headers
     ---
-    :parameter: Auth key is stored encrypted in ENV.  X-Derp-Key is encrypted and compared.  Header should be plain text.
+    Auth key is stored encrypted in ENV.  X-Auth-Key is encrypted and compared.  Header should be plain text.
+    ---
     :return: Results of API call if authorized, error response if not
     """
     @wraps(f)
     def decorated(*args, **kwargs):
-        if request.headers.get("X-Derp-Key"):
-            if encrypt_string(request.headers.get("X-Derp-Key")) != os.environ.get("AUTH_HEADER_KEY"):
-                return {"Status": 401, "Response": "NOT AUTHORIZED"}, 401
+        if request.headers.get("X-Identity", False):
+            if request.headers.get("X-Auth-Key"):
+                if encrypt_string(request.headers.get("X-Auth-Key")) != os.environ.get("AUTH_HEADER_KEY"):
+                    return {"Status": 401, "Response": "NOT AUTHORIZED"}, 401
+            else:
+                return {"Status": 401, "Response": "Missing Authentication Data"}, 401
         else:
-            return {"Status": 401, "Response": "Missing Authentication Data"}, 401
+            return {"Status": 401, "Response": "Missing X-Identity Data"}
         return f(*args, **kwargs)
     return decorated
 
