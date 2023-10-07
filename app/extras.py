@@ -42,5 +42,10 @@ def responder(f):
 
 # Misc Functionality
 def encrypt_string(h_string):
+    """
+    Rudimentary encryption function for demonstration purposes
+    :param h_string: Auth Key from header
+    :return: Encrypted Auth Key
+    """
     signature = hashlib.sha256(h_string.encode()).hexdigest()
     return signature

@@ -37,9 +37,7 @@ def mongo_test():
             response = "FAIL"
             return response, 400
     if request.method == "GET":
-        extras.logger("mongo_test",
-                      data={"method": request.method, "id": request.args.get("id")},
-                      level="INFO")
+        logger.write(level='INFO', message={"method": request.method, "id": request.args.get("id")})
         if request.args.get("id"):
             query = str(request.args.get("id"))
             response = mongo_client.one(query)
@@ -49,6 +47,7 @@ def mongo_test():
             return response, 400
 
 
+# TODO: Add logging to redis calls
 @app.route('/redistest', methods=["GET", "POST"])
 @extras.authenticate
 @extras.responder

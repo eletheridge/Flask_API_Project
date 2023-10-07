@@ -11,12 +11,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
-    ports:
-      - 5672:5672
-      - 15672:15672
   redis:
     image: redis
     restart: always
@@ -29,10 +23,9 @@ services:
       - mongodb
       - localstack
       - redis
-      - rabbitmq
     restart: always
     command: flask --debug run --port=5432 --host=0.0.0.0
     volumes:
       - ${PWD}/app:/app
     ports:
-      - 5432:5432
+      - "5432:5432"

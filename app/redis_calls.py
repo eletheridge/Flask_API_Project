@@ -9,10 +9,19 @@ class RedisClient:
         self.r = redis.Redis(host='redis', port=6379, decode_responses=True)
 
     def set(self, key, value):
+        """
+        Sets key/value pair in redis
+        :return: Result of set
+        """
         results = self.r.set(key, value)
         return results
 
     def get(self, key):
+        """
+        Gets value from redis
+        :param key: Key to be retrieved
+        :return: Value of key
+        """
         try:
             if self.r.exists(key):
                 return self.r.get(f'{key}')
