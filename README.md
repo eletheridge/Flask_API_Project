@@ -1,6 +1,6 @@
 # API_Project
 
-Ongoing project building a test Flask based RESTful API.
+Ongoing personal project building a test Flask based RESTful API.  App currently only built with development and testing environment in mind.
 
 Can be run locally using included docker and docker-compose.  It will spin up A MongoDB container, a Redis Container, a localstack container, and the app.
 Currently, the API only supports simple read and write of entries to both MongoDB and Redis servers.  You can start up the entire stack and use CURL or Postman to test.
