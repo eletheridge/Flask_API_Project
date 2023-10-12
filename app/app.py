@@ -47,19 +47,22 @@ def mongo_test():
             return response, 400
 
 
-# TODO: Add logging to redis calls
 @app.route('/redistest', methods=["GET", "POST"])
 @extras.authenticate
 @extras.responder
 def redis_test():
     client = RedisClient()
     if request.method == "GET":
+        logger.write(level='INFO', message={"method": request.method, "id": request.args.get("id")})
+
         if request.args.get("key"):
             response = client.get(request.args.get("key"))
             return response, 200
         else:
             return "Missing expected argument: 'key'", 400
     if request.method == "POST":
+        logger.write(level="INFO",
+                     message=f'INBOUND POST REQUEST -- ID: {request.args.get("id")} -- BODY: {request.json}')
         body = request.json
         if len(body.keys()) > 1 or len(body.keys()) < 1:
             return "Malformed Payload", 400
@@ -67,6 +70,8 @@ def redis_test():
             for key in body:
                 response = client.set(key, body[key])
                 if response:
+                    logger.write(level="INFO",
+                                 message=f'OUTBOUND POST RESPONSE -- ID: {key} -- BODY: {client.get(key)}')
                     return {key: client.get(key)}, 200
 
 

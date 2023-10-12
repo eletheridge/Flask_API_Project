@@ -20,7 +20,7 @@ class MongoConnect(object):
     Class for interfacing with mongo server
     """
     def __init__(self, collection="test"):
-        # Username and Password would be abstracted away  as env vars in a production environment
+        # Username and Password would be abstracted away as env vars in a production environment
         self.client = pymongo.MongoClient('mongodb://root:rootpassword@mongodb:27017'
                                           '/admin?authSource=admin&authMechanism=SCRAM-SHA-1')
         self.db = self.client.testing
