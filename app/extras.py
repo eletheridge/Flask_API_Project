@@ -3,6 +3,7 @@ from flask import request
 import hashlib
 import os
 from datetime import datetime
+import base64
 
 
 # Decorators
@@ -49,3 +50,32 @@ def encrypt_string(h_string):
     """
     signature = hashlib.sha256(h_string.encode()).hexdigest()
     return signature
+
+
+def convert_base64_to_file(base64_string, filename):
+    """
+    Converts base64 string to file
+    :param base64_string: Base64 string to be converted
+    :param filename: Name of file to be created
+    :return: True if successful, error if not
+    """
+    try:
+        with open(filename, "wb") as fh:
+            fh.write(base64.b64decode(base64_string))
+        return True
+    except Exception as e:
+        return e
+
+
+def convert_file_to_base64(filename):
+    """
+    Converts file to base64 string
+    :param filename:
+    :return: Base64 string
+    """
+    try:
+        with open(filename, "rb") as fh:
+            result = base64.b64encode(fh.read())
+        return result.decode('utf-8')
+    except Exception as e:
+        raise Exception(e)

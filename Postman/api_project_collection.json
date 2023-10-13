@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "0b76f248-7307-47ae-8c5e-db528e5b349a",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18325707"
+	},
+	"item": [
+		{
+			"name": "MongoTest GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MongoTest POST",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RedisTest POST",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RedisTest GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "S3 Upload",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "S3 Download",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth-Key",
+						"value": "authkey",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/mongotest?id=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

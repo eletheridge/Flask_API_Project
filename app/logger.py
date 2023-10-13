@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 class Logger:
-	def __init__(self, filename='app.log', app_name=__name__):
+	def __init__(self, filename='/logs/app.log', app_name=__name__):
 		self.filename = filename
 		self.app_name = app_name
 

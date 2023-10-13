@@ -4,11 +4,13 @@ from datetime import datetime
 import extras
 from redis_calls import RedisClient
 from logger import Logger
+import s3_calls
 
 app = Flask(__name__)
 
 mongo_client = MongoConnect("test")
-logger = Logger(filename='api.log', app_name='API')
+s3 = s3_calls.S3()
+logger = Logger(filename='logs/api.log', app_name='API')
 
 
 @app.route('/')
@@ -73,6 +75,53 @@ def redis_test():
                     logger.write(level="INFO",
                                  message=f'OUTBOUND POST RESPONSE -- ID: {key} -- BODY: {client.get(key)}')
                     return {key: client.get(key)}, 200
+
+
+@app.route('/s3/upload/', methods=["POST"])
+@extras.authenticate
+@extras.responder
+def s3_upload():
+    logger.write(level="INFO",
+                 message=f'INBOUND S3 UPLOAD REQUEST -- ID: {request.args.get("id")} -- BODY: {request.json}')
+    body = request.json
+    if "bucket" in body.keys() and "file" in body.keys() and 'filename' in body.keys():
+        bucket = body['bucket']
+        file = body['file']
+        if len(file) % 4 != 0:
+            logger.write(level="INFO",
+                         message=f'OUTBOUND UPLOAD RESPONSE -- ID: {body["filename"]} -- BODY: Invalid Base64 String')
+            return "Invalid Base64 String", 400
+        filename = body['filename']
+        result = s3.upload_file(file, bucket, filename)
+        if result == "Success":
+            logger.write(level="INFO",
+                         message=f'OUTBOUND UPLOAD RESPONSE -- ID: {filename} -- BODY: {result}')
+            return "File Uploaded", 200
+        else:
+            logger.write(level="INFO",
+                         message=f'OUTBOUND UPLOAD RESPONSE -- ID: {filename} -- BODY: {result}')
+            return result, 400
+
+
+@app.route('/s3/download/', methods=["POST"])
+@extras.authenticate
+@extras.responder
+def s3_download():
+    logger.write(level="INFO",
+                 message=f'INBOUND DOWNLOAD REQUEST -- ID: {request.args.get("id")} -- BODY: {request.json}')
+    body = request.json
+    if "bucket" in body.keys() and "file" in body.keys():
+        bucket = body['bucket']
+        file = body['file']
+        result, data = s3.download_file(bucket, file)
+        if result == "Success":
+            logger.write(level="INFO",
+                         message=f'OUTBOUND DOWNLOAD RESPONSE -- ID: {file} -- BODY: {data}')
+            return data, 200
+        else:
+            logger.write(level="INFO",
+                         message=f'OUTBOUND DOWNLOAD RESPONSE -- ID: {file} -- BODY: {result}')
+            return result, 404
 
 
 if __name__ == '__main__':
