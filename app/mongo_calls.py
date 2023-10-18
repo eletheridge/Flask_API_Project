@@ -38,6 +38,21 @@ class MongoConnect(object):
             raise Exception(e)
         return result
 
+    def find(self, query=None):
+        """
+        Locate multiple objects in the database by query
+        :param query: Query to be executed
+        :return: List of objects from database
+        """
+        try:
+            result = self.collection_obj.find(query)
+            response = []
+            for r in result:
+                response.append(json.loads(MongoEncoder().encode(r)))
+        except Exception as e:
+            raise Exception(e)
+        return response
+
     def post(self, payload=None):
         """
         Inserts object into database

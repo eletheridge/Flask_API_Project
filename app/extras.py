@@ -4,28 +4,30 @@ import hashlib
 import os
 from datetime import datetime
 import base64
+from auth import validate_refresh_token
 
 
 # Decorators
 def authenticate(f):
     """
-    Simple Authentication Example using headers
-    ---
-    Auth key is stored encrypted in ENV.  X-Auth-Key is encrypted and compared.  Header should be plain text.
-    ---
+    Crude implementation of an oauth type flow.  Refresh token must first be obtained with /get_refresh_token endpoint.
+    That Refresh token is then used in headers for all other requests.  Refresh token is valid for 15 minutes.
+    Once expired, a new refresh token must be obtained.  Refresh token is stored in redis for quick lookup.
     :return: Results of API call if authorized, error response if not
     """
     @wraps(f)
     def decorated(*args, **kwargs):
-        if request.headers.get("X-Identity", False):
-            if request.headers.get("X-Auth-Key"):
-                if encrypt_string(request.headers.get("X-Auth-Key")) != os.environ.get("AUTH_HEADER_KEY"):
+        if request.headers.get("X-Client-ID", False):
+            if request.headers.get("X-Refresh-Token"):
+                if not validate_refresh_token(request.headers.get("X-Client-ID"),
+                                              request.headers.get("X-Refresh-Token")):
                     return {"Status": 401, "Response": "NOT AUTHORIZED"}, 401
             else:
-                return {"Status": 401, "Response": "Missing Authentication Data"}, 401
+                return {"Status": 401, "Response": "Missing Refresh Token"}, 401
         else:
-            return {"Status": 401, "Response": "Missing X-Identity Data"}
+            return {"Status": 401, "Response": "Missing Client ID"}
         return f(*args, **kwargs)
+
     return decorated
 
 

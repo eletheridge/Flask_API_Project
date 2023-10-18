@@ -5,6 +5,7 @@ import extras
 from redis_calls import RedisClient
 from logger import Logger
 import s3_calls
+import auth
 
 app = Flask(__name__)
 
@@ -16,6 +17,40 @@ logger = Logger(filename='logs/api.log', app_name='API')
 @app.route('/')
 def index():
     return "Welcome to the Jungle"
+
+
+@app.route('/create_client', methods=["POST"])
+@extras.responder
+def create_client():
+    logger.write(level="INFO",
+                 message=f'INBOUND CREATE CLIENT REQUEST -- BODY: {request.json}')
+    body = request.json
+    if "client_name" in body.keys():
+        client_name = body['client_name']
+        response = auth.generate_client_keys(client_name)
+        logger.write(level="INFO",
+                     message=f'OUTBOUND CREATE CLIENT RESPONSE -- ID: {response["_id"]} -- BODY: {response}')
+        return response, 200
+
+
+@app.route('/get_refresh_token', methods=["POST"])
+@extras.responder
+def get_refresh_token():
+    logger.write(level="INFO",
+                 message=f'INBOUND GET REFRESH TOKEN REQUEST -- ID: {request.headers.get("X-Client-ID", "NONE")}')
+    body = request.json
+    if "client_id" in body.keys() and "client_secret" in body.keys():
+        client_id = body['client_id']
+        client_secret = body['client_secret']
+        response = auth.generate_refresh_token(client_id, client_secret)
+        logger.write(level="INFO",
+                     message=f'OUTBOUND GET REFRESH TOKEN RESPONSE -- ID: {client_id} -- BODY: {response}')
+        return response, 200
+    else:
+        response = "Missing expected argument(s): 'client_id', 'client_secret'"
+        logger.write(level="INFO",
+                     message=f'OUTBOUND GET REFRESH TOKEN RESPONSE -- ID: {request.args.get("id")} -- BODY: {response}')
+        return response, 400
 
 
 @app.route('/mongotest', methods=["POST", "GET"])

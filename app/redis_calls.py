@@ -30,3 +30,17 @@ class RedisClient:
         except Exception as e:
             return e
 
+    def expire(self, key, exp_time):
+        """
+        Sets key to expire in specified time frame.
+        :param key: Key to be expired
+        :param exp_time: Time in seconds for key to expire
+        :return: Result of expire - Boolean value
+        """
+        try:
+            if self.r.exists(key):
+                return self.r.expire(key, exp_time)
+            else:
+                return "Key does not exist"
+        except Exception as e:
+            return e

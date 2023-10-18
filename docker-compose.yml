@@ -26,8 +26,8 @@ services:
     restart: always
     command: flask --debug run --port=5432 --host=0.0.0.0
     volumes:
-      - ${PWD}/app:/app
-      - ${PWD}/docs:/docs
-      - ${PWD}/logs:/logs
+      - ./app:/app
+      - ./docs:/docs
+      - ./logs:/logs
     ports:
       - "5432:5432"
