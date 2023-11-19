@@ -23,7 +23,7 @@ your machine.  Once the app is built, you can use the postman collection to test
 currently has all the features the API supports.  You may need to tweak local network and docker settings to be able to 
 make calls to the API from postman.
 
-Structure:
+Structure: 
 - /app: Contains the main app code.
 - /logs: Directory where logs are stored by default
 - /postman: Contains the postman collection and environment files
