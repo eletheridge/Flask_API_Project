@@ -22,4 +22,7 @@ RUN pip install --upgrade pip
 ADD requirements.txt ./app/requirements.txt
 RUN pip3 install -r /app/requirements.txt
 
-EXPOSE 5432
+EXPOSE 5433
+
+WORKDIR /app
+ENTRYPOINT ["./launch.sh"]

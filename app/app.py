@@ -1,9 +1,9 @@
 from flask import Flask, request
-from mongo_calls import MongoConnect
+from common.mongo_calls import MongoConnect
 from datetime import datetime
-import extras
-from redis_calls import RedisClient
-from logger import Logger
+import common.extras as extras
+from common.redis_calls import RedisClient
+from common.logger import Logger
 import s3_calls
 import auth
 
@@ -33,23 +33,23 @@ def create_client():
         return response, 200
 
 
-@app.route('/get_refresh_token', methods=["POST"])
+@app.route('/get_auth_token', methods=["POST"])
 @extras.responder
-def get_refresh_token():
+def get_auth_token():
     logger.write(level="INFO",
-                 message=f'INBOUND GET REFRESH TOKEN REQUEST -- ID: {request.headers.get("X-Client-ID", "NONE")}')
+                 message=f'INBOUND GET AUTH TOKEN REQUEST -- ID: {request.headers.get("X-Client-ID", "NONE")}')
     body = request.json
     if "client_id" in body.keys() and "client_secret" in body.keys():
         client_id = body['client_id']
         client_secret = body['client_secret']
-        response = auth.generate_refresh_token(client_id, client_secret)
+        response = auth.generate_auth_token(client_id, client_secret)
         logger.write(level="INFO",
-                     message=f'OUTBOUND GET REFRESH TOKEN RESPONSE -- ID: {client_id} -- BODY: {response}')
+                     message=f'OUTBOUND GET AUTH TOKEN RESPONSE -- ID: {client_id} -- BODY: {response}')
         return response, 200
     else:
         response = "Missing expected argument(s): 'client_id', 'client_secret'"
         logger.write(level="INFO",
-                     message=f'OUTBOUND GET REFRESH TOKEN RESPONSE -- ID: {request.args.get("id")} -- BODY: {response}')
+                     message=f'OUTBOUND GET AUTH TOKEN RESPONSE -- ID: {request.args.get("id")} -- BODY: {response}')
         return response, 400
 
 
@@ -160,4 +160,4 @@ def s3_download():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5432)

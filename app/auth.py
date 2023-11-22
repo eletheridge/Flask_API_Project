@@ -1,45 +1,26 @@
 from uuid import uuid4
-from mongo_calls import MongoConnect
-from redis_calls import RedisClient
-import extras
-
+from common.mongo_calls import MongoConnect
+from common.redis_calls import RedisClient
+import common.extras as extras
+import requests
 
 mongo_client = MongoConnect("clients")
 redis_client = RedisClient()
 
 
-def generate_refresh_token(client_id, client_secret):
+def generate_auth_token(client_id, client_secret):
     """
-    Generates a refresh token for the client, returns it, and stores it in Redis.  Token will be good for 15 minutes.
+    Reaches out to the Auth Service to generate an auth token for the client, returns it, and stores it in Redis.
     :param client_id: Client ID
     :param client_secret: Client Secret
-    :return: Refresh Token
+    :return: auth Token
     """
-    client = mongo_client.find({'client_id': extras.encrypt_string(client_id)})
-    if client:
-        if client[0]['client_secret'] == extras.encrypt_string(client_secret):
-            refresh_token = f'refresh_token_{str(uuid4())}'
-            result = redis_client.set(client_id, refresh_token)  # Client ID is the key, refresh token is the value
-            if result:
-                redis_client.expire(client_id, 900)
-                return {'refresh_token': refresh_token}
-        else:
-            return "Invalid Client Secret"
-    else:
-        return "Invalid Client ID"
-
-
-def validate_refresh_token(client_id, refresh_token):
-    """
-    Validates the refresh token for the client.  Refresh token is stored in Redis.
-    :param client_id: Client ID
-    :param refresh_token: Refresh Token
-    :return: True if valid, False if not
-    """
-    if redis_client.get(client_id) == refresh_token:
-        return True
-    else:
-        return False
+    try:
+        response = requests.post("http://auth:5433/auth_token",
+                                 data={'client_id': client_id, 'client_secret': client_secret})
+        return response.json()["Response"]
+    except Exception as e:
+        return e
 
 
 def generate_client_keys(client_name):
