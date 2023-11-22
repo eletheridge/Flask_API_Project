@@ -1,0 +1,6 @@
+Flask
+pymongo
+redis
+boto3
+requests
+uwsgi

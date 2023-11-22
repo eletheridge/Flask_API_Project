@@ -1,0 +1,343 @@
+{
+	"info": {
+		"_postman_id": "0b76f248-7307-47ae-8c5e-db528e5b349a",
+		"name": "API Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18325707"
+	},
+	"item": [
+		{
+			"name": "MongoTest GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/mongotest?id={{test_mongo_object}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{test_mongo_object}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MongoTest POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json()",
+							"pm.environment.set(\"test_mongo_object\", jsonData['Response']['_id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"post_message\": \"Test Message\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/mongotest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mongotest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RedisTest POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"test_key\": \"Message Contents\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/redistest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"redistest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RedisTest GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/redistest?key={{test_redis_key}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"redistest"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{test_redis_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "S3 Upload",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bucket\": \"testbucket\",\n    \"file\": \"VEhJUyBJUyBBIFRFU1QgVVBMT0FE\",\n    \"filename\": \"test_upload_deux_.txt\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/s3/upload/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"upload",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "S3 Download",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bucket\": \"testbucket\",\n    \"file\": \"test_upload_deux_.txt\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/s3/download/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"download",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get auth token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json()",
+							"pm.environment.set(\"auth_token\", jsonData['Response']['auth_token']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Client-ID",
+						"value": "{{client_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"client_id\" : \"{{client_id}}\",\n    \"client_secret\": \"{{client_secret}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/get_auth_token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_auth_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json()",
+							"pm.environment.set(\"client_id\", jsonData['Response']['client_id']);",
+							"pm.environment.set(\"client_secret\", jsonData['Response']['client_secret']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"client_name\": \"A Test Client\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/create_client",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"create_client"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

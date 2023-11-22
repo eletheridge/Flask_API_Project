@@ -1,0 +1,46 @@
+version: "2.3"
+services:
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3,sqs
+      - AWS_DEFAULT_REGION=us-west-2
+      - EDGE_PORT=4566
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+  auth:
+    build:
+      context: ./auth_svc
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+      - redis
+    restart: always
+    command: sleep infinity
+    volumes:
+      - ./auth_svc:/app
+      - ./common:/app/common
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+      - localstack
+      - redis
+    restart: always
+    command: sleep infinity
+    volumes:
+      - ./app:/app
+      - ./docs:/docs
+      - ./logs:/logs
+      - ./common:/app/common
+    ports:
+      - "5432:5432"
